@@ -1,0 +1,81 @@
+   1               		.file	"main.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	main
+  18               	main:
+  19               	.LFB6:
+  20               	.LM1:
+  21 0000 CF93      		push r28
+  22 0002 DF93      		push r29
+  23               	/* prologue: function */
+  24               	/* frame size = 0 */
+  25               	.LM2:
+  26 0004 60E8      		ldi r22,lo8(9600)
+  27 0006 75E2      		ldi r23,hi8(9600)
+  28 0008 80E0      		ldi r24,hlo8(9600)
+  29 000a 90E0      		ldi r25,hhi8(9600)
+  30 000c 0E94 0000 		call UART_Init
+  31               	.LBB12:
+  32               	.LBB13:
+  33               	.LBB14:
+  34               	.LBB15:
+  35               	.LM3:
+  36 0010 CCE2      		ldi r28,lo8(300)
+  37 0012 D1E0      		ldi r29,hi8(300)
+  38               	.LVL0:
+  39               	.L3:
+  40               	.LBE15:
+  41               	.LBE14:
+  42               	.LBE13:
+  43               	.LBE12:
+  44               	.LM4:
+  45 0014 88E3      		ldi r24,lo8(56)
+  46               	.LVL1:
+  47 0016 0E94 0000 		call UART_Transmit_Byte
+  48               	.LVL2:
+  49 001a 80ED      		ldi r24,lo8(2000)
+  50 001c 97E0      		ldi r25,hi8(2000)
+  51               	.LVL3:
+  52               	.L2:
+  53               	.LBB19:
+  54               	.LBB18:
+  55               	.LBB17:
+  56               	.LBB16:
+  57               	.LM5:
+  58 001e FE01      		movw r30,r28
+  59               	.LVL4:
+  60               	/* #APP */
+  61               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+  62 0020 3197      		1: sbiw r30,1
+  63 0022 01F4      		brne 1b
+  64               	 ;  0 "" 2
+  65               	/* #NOAPP */
+  66               	.LBE16:
+  67               	.LBE17:
+  68               	.LM6:
+  69 0024 0197      		sbiw r24,1
+  70               	.LM7:
+  71 0026 01F4      		brne .L2
+  72 0028 00C0      		rjmp .L3
+  73               	.LBE18:
+  74               	.LBE19:
+  75               	.LFE6:
+ 101               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\farid\AppData\Local\Temp/cc4xJ5Fy.s:2      *ABS*:0000003f __SREG__
+C:\Users\farid\AppData\Local\Temp/cc4xJ5Fy.s:3      *ABS*:0000003e __SP_H__
+C:\Users\farid\AppData\Local\Temp/cc4xJ5Fy.s:4      *ABS*:0000003d __SP_L__
+C:\Users\farid\AppData\Local\Temp/cc4xJ5Fy.s:5      *ABS*:00000034 __CCP__
+C:\Users\farid\AppData\Local\Temp/cc4xJ5Fy.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\farid\AppData\Local\Temp/cc4xJ5Fy.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\farid\AppData\Local\Temp/cc4xJ5Fy.s:18     .text:00000000 main
+
+UNDEFINED SYMBOLS
+UART_Init
+UART_Transmit_Byte
