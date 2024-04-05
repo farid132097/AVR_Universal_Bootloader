@@ -7,8 +7,7 @@
 
 int main(void){
 
-  UART_Init(9600);
-  UART_Transmit_Byte(0x38);
+  Boot_Init(9600);
   
   while(1){
 	

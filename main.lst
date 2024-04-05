@@ -17,52 +17,48 @@
   25 0002 75E2      		ldi r23,hi8(9600)
   26 0004 80E0      		ldi r24,hlo8(9600)
   27 0006 90E0      		ldi r25,hhi8(9600)
-  28 0008 0E94 0000 		call UART_Init
-  29               	.LM3:
-  30 000c 88E3      		ldi r24,lo8(56)
-  31 000e 0E94 0000 		call UART_Transmit_Byte
-  32 0012 80ED      		ldi r24,lo8(2000)
-  33 0014 97E0      		ldi r25,hi8(2000)
-  34               	.LVL0:
-  35               	.LBB12:
-  36               	.LBB13:
-  37               	.LBB14:
-  38               	.LBB15:
-  39               	.LM4:
-  40 0016 2CE2      		ldi r18,lo8(300)
-  41 0018 31E0      		ldi r19,hi8(300)
-  42               	.LVL1:
-  43               	.L6:
-  44 001a F901      		movw r30,r18
-  45               	/* #APP */
-  46               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
-  47 001c 3197      		1: sbiw r30,1
-  48 001e 01F4      		brne 1b
-  49               	 ;  0 "" 2
-  50               	/* #NOAPP */
-  51               	.LBE15:
-  52               	.LBE14:
-  53               	.LM5:
-  54 0020 0197      		sbiw r24,1
-  55               	.LM6:
-  56 0022 01F4      		brne .L6
-  57 0024 80ED      		ldi r24,lo8(2000)
-  58 0026 97E0      		ldi r25,hi8(2000)
-  59 0028 00C0      		rjmp .L6
-  60               	.LBE13:
-  61               	.LBE12:
-  62               	.LFE6:
-  88               	.Letext0:
+  28 0008 0E94 0000 		call Boot_Init
+  29 000c 80ED      		ldi r24,lo8(2000)
+  30 000e 97E0      		ldi r25,hi8(2000)
+  31               	.LVL0:
+  32               	.LBB12:
+  33               	.LBB13:
+  34               	.LBB14:
+  35               	.LBB15:
+  36               	.LM3:
+  37 0010 2CE2      		ldi r18,lo8(300)
+  38 0012 31E0      		ldi r19,hi8(300)
+  39               	.LVL1:
+  40               	.L6:
+  41 0014 F901      		movw r30,r18
+  42               	/* #APP */
+  43               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+  44 0016 3197      		1: sbiw r30,1
+  45 0018 01F4      		brne 1b
+  46               	 ;  0 "" 2
+  47               	/* #NOAPP */
+  48               	.LBE15:
+  49               	.LBE14:
+  50               	.LM4:
+  51 001a 0197      		sbiw r24,1
+  52               	.LM5:
+  53 001c 01F4      		brne .L6
+  54 001e 80ED      		ldi r24,lo8(2000)
+  55 0020 97E0      		ldi r25,hi8(2000)
+  56 0022 00C0      		rjmp .L6
+  57               	.LBE13:
+  58               	.LBE12:
+  59               	.LFE6:
+  85               	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\farid\AppData\Local\Temp/ccDniPyK.s:2      *ABS*:0000003f __SREG__
-C:\Users\farid\AppData\Local\Temp/ccDniPyK.s:3      *ABS*:0000003e __SP_H__
-C:\Users\farid\AppData\Local\Temp/ccDniPyK.s:4      *ABS*:0000003d __SP_L__
-C:\Users\farid\AppData\Local\Temp/ccDniPyK.s:5      *ABS*:00000034 __CCP__
-C:\Users\farid\AppData\Local\Temp/ccDniPyK.s:6      *ABS*:00000000 __tmp_reg__
-C:\Users\farid\AppData\Local\Temp/ccDniPyK.s:7      *ABS*:00000001 __zero_reg__
-C:\Users\farid\AppData\Local\Temp/ccDniPyK.s:18     .text:00000000 main
+C:\Users\farid\AppData\Local\Temp/ccadLund.s:2      *ABS*:0000003f __SREG__
+C:\Users\farid\AppData\Local\Temp/ccadLund.s:3      *ABS*:0000003e __SP_H__
+C:\Users\farid\AppData\Local\Temp/ccadLund.s:4      *ABS*:0000003d __SP_L__
+C:\Users\farid\AppData\Local\Temp/ccadLund.s:5      *ABS*:00000034 __CCP__
+C:\Users\farid\AppData\Local\Temp/ccadLund.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\farid\AppData\Local\Temp/ccadLund.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\farid\AppData\Local\Temp/ccadLund.s:18     .text:00000000 main
 
 UNDEFINED SYMBOLS
-UART_Init
-UART_Transmit_Byte
+Boot_Init
