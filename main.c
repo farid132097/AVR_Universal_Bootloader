@@ -8,10 +8,10 @@
 int main(void){
 
   UART_Init(9600);
+  UART_Transmit_Byte(0x38);
   
   while(1){
 	
-	UART_Transmit_Byte(0x38);
 	_delay_ms(200);
   }
 }

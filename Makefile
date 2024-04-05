@@ -62,8 +62,9 @@ MCU = atmega328p
 #         F_CPU = 16000000
 #         F_CPU = 18432000
 #         F_CPU = 20000000
-F_CPU = 12000000
 
+F_CPU = 12000000
+BOOT_ADDR = 0x7000
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex
@@ -263,6 +264,7 @@ LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
 LDFLAGS += $(EXTMEMOPTS)
 LDFLAGS += $(patsubst %,-L%,$(EXTRALIBDIRS))
 LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
+LDFLAGS = -Wl,--section-start=.text=$(BOOT_ADDR)
 #LDFLAGS += -T linker_script.x
 
 

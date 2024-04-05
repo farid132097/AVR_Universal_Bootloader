@@ -9,11 +9,11 @@
   16               	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 boot.c
-C:\Users\farid\AppData\Local\Temp/ccwkpHzD.s:2      *ABS*:0000003f __SREG__
-C:\Users\farid\AppData\Local\Temp/ccwkpHzD.s:3      *ABS*:0000003e __SP_H__
-C:\Users\farid\AppData\Local\Temp/ccwkpHzD.s:4      *ABS*:0000003d __SP_L__
-C:\Users\farid\AppData\Local\Temp/ccwkpHzD.s:5      *ABS*:00000034 __CCP__
-C:\Users\farid\AppData\Local\Temp/ccwkpHzD.s:6      *ABS*:00000000 __tmp_reg__
-C:\Users\farid\AppData\Local\Temp/ccwkpHzD.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\farid\AppData\Local\Temp/ccpz9H8L.s:2      *ABS*:0000003f __SREG__
+C:\Users\farid\AppData\Local\Temp/ccpz9H8L.s:3      *ABS*:0000003e __SP_H__
+C:\Users\farid\AppData\Local\Temp/ccpz9H8L.s:4      *ABS*:0000003d __SP_L__
+C:\Users\farid\AppData\Local\Temp/ccpz9H8L.s:5      *ABS*:00000034 __CCP__
+C:\Users\farid\AppData\Local\Temp/ccpz9H8L.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\farid\AppData\Local\Temp/ccpz9H8L.s:7      *ABS*:00000001 __zero_reg__
 
 NO UNDEFINED SYMBOLS
