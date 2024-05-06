@@ -3,25 +3,25 @@ main.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000316  00007000  00007000  00000074  2**1
+  0 .text         000003c0  00007000  00007000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          0000000a  00800100  00800100  0000038a  2**0
+  1 .bss          000000d6  00800100  00800100  00000434  2**0
                   ALLOC
-  2 .debug_aranges 00000060  00000000  00000000  0000038a  2**0
+  2 .debug_aranges 00000060  00000000  00000000  00000434  2**0
                   CONTENTS, READONLY, DEBUGGING
-  3 .debug_pubnames 000001d5  00000000  00000000  000003ea  2**0
+  3 .debug_pubnames 00000230  00000000  00000000  00000494  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   000004a4  00000000  00000000  000005bf  2**0
+  4 .debug_info   0000069b  00000000  00000000  000006c4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 000002c5  00000000  00000000  00000a63  2**0
+  5 .debug_abbrev 00000406  00000000  00000000  00000d5f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   000004e5  00000000  00000000  00000d28  2**0
+  6 .debug_line   0000066c  00000000  00000000  00001165  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_frame  00000120  00000000  00000000  00001210  2**2
+  7 .debug_frame  00000160  00000000  00000000  000017d4  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    0000026d  00000000  00000000  00001330  2**0
+  8 .debug_str    000002ba  00000000  00000000  00001934  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    000001a0  00000000  00000000  0000159d  2**0
+  9 .debug_loc    0000019c  00000000  00000000  00001bee  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -45,7 +45,7 @@ Disassembly of section .text:
     703c:	0c 94 46 38 	jmp	0x708c	; 0x708c <__bad_interrupt>
     7040:	0c 94 46 38 	jmp	0x708c	; 0x708c <__bad_interrupt>
     7044:	0c 94 46 38 	jmp	0x708c	; 0x708c <__bad_interrupt>
-    7048:	0c 94 46 38 	jmp	0x708c	; 0x708c <__bad_interrupt>
+    7048:	0c 94 ae 38 	jmp	0x715c	; 0x715c <__vector_18>
     704c:	0c 94 46 38 	jmp	0x708c	; 0x708c <__bad_interrupt>
     7050:	0c 94 46 38 	jmp	0x708c	; 0x708c <__bad_interrupt>
     7054:	0c 94 46 38 	jmp	0x708c	; 0x708c <__bad_interrupt>
@@ -72,11 +72,11 @@ Disassembly of section .text:
     707c:	1d 92       	st	X+, r1
 
 0000707e <.do_clear_bss_start>:
-    707e:	aa 30       	cpi	r26, 0x0A	; 10
+    707e:	a6 3d       	cpi	r26, 0xD6	; 214
     7080:	b1 07       	cpc	r27, r17
     7082:	e1 f7       	brne	.-8      	; 0x707c <.do_clear_bss_loop>
     7084:	0e 94 48 38 	call	0x7090	; 0x7090 <main>
-    7088:	0c 94 89 39 	jmp	0x7312	; 0x7312 <_exit>
+    7088:	0c 94 de 39 	jmp	0x73bc	; 0x73bc <_exit>
 
 0000708c <__bad_interrupt>:
     708c:	0c 94 00 38 	jmp	0x7000	; 0x7000 <__vectors>
@@ -87,545 +87,698 @@ Disassembly of section .text:
 
 int main(void){
 
-  Boot_Init(9600);
-    7090:	60 e8       	ldi	r22, 0x80	; 128
-    7092:	75 e2       	ldi	r23, 0x25	; 37
-    7094:	80 e0       	ldi	r24, 0x00	; 0
-    7096:	90 e0       	ldi	r25, 0x00	; 0
-    7098:	0e 94 4d 39 	call	0x729a	; 0x729a <Boot_Init>
-    709c:	80 ed       	ldi	r24, 0xD0	; 208
-    709e:	97 e0       	ldi	r25, 0x07	; 7
+  Boot_Init();
+    7090:	0e 94 97 39 	call	0x732e	; 0x732e <Boot_Init>
+  
+  if(UART_Get_Buf_Index()==12){
+    7094:	0e 94 dd 38 	call	0x71ba	; 0x71ba <UART_Get_Buf_Index>
+    7098:	0c 97       	sbiw	r24, 0x0c	; 12
+    709a:	19 f4       	brne	.+6      	; 0x70a2 <main+0x12>
+    DDRD |= (1<<4);
+    709c:	54 9a       	sbi	0x0a, 4	; 10
+	PORTD|= (1<<4);
+    709e:	5c 9a       	sbi	0x0b, 4	; 11
+    70a0:	02 c0       	rjmp	.+4      	; 0x70a6 <main+0x16>
+  }else{
+    DDRD |= (1<<4);
+    70a2:	54 9a       	sbi	0x0a, 4	; 10
+	PORTD&=~(1<<4);
+    70a4:	5c 98       	cbi	0x0b, 4	; 11
+  }
+  UART_Transmit_Byte(UART_Get_Buf_Index());
+    70a6:	0e 94 dd 38 	call	0x71ba	; 0x71ba <UART_Get_Buf_Index>
+    70aa:	0e 94 a4 38 	call	0x7148	; 0x7148 <UART_Transmit_Byte>
+    70ae:	80 ed       	ldi	r24, 0xD0	; 208
+    70b0:	97 e0       	ldi	r25, 0x07	; 7
     milliseconds can be achieved.
  */
 void
 _delay_loop_2(uint16_t __count)
 {
 	__asm__ volatile (
-    70a0:	2c e2       	ldi	r18, 0x2C	; 44
-    70a2:	31 e0       	ldi	r19, 0x01	; 1
-    70a4:	f9 01       	movw	r30, r18
-    70a6:	31 97       	sbiw	r30, 0x01	; 1
-    70a8:	f1 f7       	brne	.-4      	; 0x70a6 <main+0x16>
+    70b2:	2c e2       	ldi	r18, 0x2C	; 44
+    70b4:	31 e0       	ldi	r19, 0x01	; 1
+    70b6:	f9 01       	movw	r30, r18
+    70b8:	31 97       	sbiw	r30, 0x01	; 1
+    70ba:	f1 f7       	brne	.-4      	; 0x70b8 <main+0x28>
 		__ticks = (uint16_t) (__ms * 10.0);
 		while(__ticks)
 		{
 			// wait 1/10 ms
 			_delay_loop_2(((F_CPU) / 4e3) / 10);
 			__ticks --;
-    70aa:	01 97       	sbiw	r24, 0x01	; 1
+    70bc:	01 97       	sbiw	r24, 0x01	; 1
 		__ticks = 1;
 	else if (__tmp > 65535)
 	{
 		//	__ticks = requested delay in 1/10 ms
 		__ticks = (uint16_t) (__ms * 10.0);
 		while(__ticks)
-    70ac:	d9 f7       	brne	.-10     	; 0x70a4 <main+0x14>
-    70ae:	80 ed       	ldi	r24, 0xD0	; 208
-    70b0:	97 e0       	ldi	r25, 0x07	; 7
-    70b2:	f8 cf       	rjmp	.-16     	; 0x70a4 <main+0x14>
+    70be:	d9 f7       	brne	.-10     	; 0x70b6 <main+0x26>
+    70c0:	80 ed       	ldi	r24, 0xD0	; 208
+    70c2:	97 e0       	ldi	r25, 0x07	; 7
+    70c4:	f8 cf       	rjmp	.-16     	; 0x70b6 <main+0x26>
 
-000070b4 <UART_Clear_Registers>:
-#define  UART_ENABLE_TX
-#define  UART_ENABLE_RX
-#define  UART_ENABLE_RX_INT
+000070c6 <UART_Struct_Init>:
+  volatile uint16_t BufIndex;
+}uart_t;
+
+uart_t UART;
+
+void UART_Struct_Init(void){
+    70c6:	80 e0       	ldi	r24, 0x00	; 0
+    70c8:	90 e0       	ldi	r25, 0x00	; 0
+  #ifdef UART_BUF_SIZE
+  for(uint16_t i=0;i<UART_BUF_SIZE;i++){
+    UART.Buf[i]=0;
+    70ca:	fc 01       	movw	r30, r24
+    70cc:	e0 50       	subi	r30, 0x00	; 0
+    70ce:	ff 4f       	sbci	r31, 0xFF	; 255
+    70d0:	10 82       	st	Z, r1
+
+uart_t UART;
+
+void UART_Struct_Init(void){
+  #ifdef UART_BUF_SIZE
+  for(uint16_t i=0;i<UART_BUF_SIZE;i++){
+    70d2:	01 96       	adiw	r24, 0x01	; 1
+    70d4:	88 3c       	cpi	r24, 0xC8	; 200
+    70d6:	91 05       	cpc	r25, r1
+    70d8:	c1 f7       	brne	.-16     	; 0x70ca <UART_Struct_Init+0x4>
+  #else
+  for(uint16_t i=0;i<140;i++){
+    UART.Buf[i]=0;
+  }
+  #endif
+  UART.BufIndex=0;
+    70da:	10 92 c9 01 	sts	0x01C9, r1
+    70de:	10 92 c8 01 	sts	0x01C8, r1
+}
+    70e2:	08 95       	ret
+
+000070e4 <UART_Clear_Registers>:
 
 void UART_Clear_Registers(void){
   UCSR0A = 0;
-    70b4:	10 92 c0 00 	sts	0x00C0, r1
+    70e4:	10 92 c0 00 	sts	0x00C0, r1
   UCSR0B = 0;
-    70b8:	10 92 c1 00 	sts	0x00C1, r1
+    70e8:	10 92 c1 00 	sts	0x00C1, r1
   UCSR0C = 0;
-    70bc:	10 92 c2 00 	sts	0x00C2, r1
+    70ec:	10 92 c2 00 	sts	0x00C2, r1
   UBRR0H = 0;
-    70c0:	10 92 c5 00 	sts	0x00C5, r1
+    70f0:	10 92 c5 00 	sts	0x00C5, r1
   UBRR0L = 0;
-    70c4:	10 92 c4 00 	sts	0x00C4, r1
+    70f4:	10 92 c4 00 	sts	0x00C4, r1
 }
-    70c8:	08 95       	ret
+    70f8:	08 95       	ret
 
-000070ca <UART_Config_Transmitter>:
+000070fa <UART_Config_Transmitter>:
 
 void UART_Config_Transmitter(void){
   UCSR0B|= (1<<TXEN0);
-    70ca:	80 91 c1 00 	lds	r24, 0x00C1
-    70ce:	88 60       	ori	r24, 0x08	; 8
-    70d0:	80 93 c1 00 	sts	0x00C1, r24
+    70fa:	80 91 c1 00 	lds	r24, 0x00C1
+    70fe:	88 60       	ori	r24, 0x08	; 8
+    7100:	80 93 c1 00 	sts	0x00C1, r24
   if((UCSR0C & 0x06) != 0x06){
-    70d4:	80 91 c2 00 	lds	r24, 0x00C2
-    70d8:	86 70       	andi	r24, 0x06	; 6
-    70da:	86 30       	cpi	r24, 0x06	; 6
-    70dc:	29 f0       	breq	.+10     	; 0x70e8 <UART_Config_Transmitter+0x1e>
+    7104:	80 91 c2 00 	lds	r24, 0x00C2
+    7108:	86 70       	andi	r24, 0x06	; 6
+    710a:	86 30       	cpi	r24, 0x06	; 6
+    710c:	29 f0       	breq	.+10     	; 0x7118 <UART_Config_Transmitter+0x1e>
     UCSR0C|=(1<<UCSZ00)|(1<<UCSZ01);
-    70de:	80 91 c2 00 	lds	r24, 0x00C2
-    70e2:	86 60       	ori	r24, 0x06	; 6
-    70e4:	80 93 c2 00 	sts	0x00C2, r24
-    70e8:	08 95       	ret
+    710e:	80 91 c2 00 	lds	r24, 0x00C2
+    7112:	86 60       	ori	r24, 0x06	; 6
+    7114:	80 93 c2 00 	sts	0x00C2, r24
+    7118:	08 95       	ret
 
-000070ea <UART_Config_Receiver>:
+0000711a <UART_Config_Receiver>:
   }
 }
 
 void UART_Config_Receiver(void){
   UCSR0B|=(1<<RXEN0);
-    70ea:	80 91 c1 00 	lds	r24, 0x00C1
-    70ee:	80 61       	ori	r24, 0x10	; 16
-    70f0:	80 93 c1 00 	sts	0x00C1, r24
+    711a:	80 91 c1 00 	lds	r24, 0x00C1
+    711e:	80 61       	ori	r24, 0x10	; 16
+    7120:	80 93 c1 00 	sts	0x00C1, r24
   if((UCSR0C & 0x06) != 0x06){
-    70f4:	80 91 c2 00 	lds	r24, 0x00C2
-    70f8:	86 70       	andi	r24, 0x06	; 6
-    70fa:	86 30       	cpi	r24, 0x06	; 6
-    70fc:	29 f0       	breq	.+10     	; 0x7108 <UART_Config_Receiver+0x1e>
+    7124:	80 91 c2 00 	lds	r24, 0x00C2
+    7128:	86 70       	andi	r24, 0x06	; 6
+    712a:	86 30       	cpi	r24, 0x06	; 6
+    712c:	29 f0       	breq	.+10     	; 0x7138 <UART_Config_Receiver+0x1e>
     UCSR0C|=(1<<UCSZ00)|(1<<UCSZ01);
-    70fe:	80 91 c2 00 	lds	r24, 0x00C2
-    7102:	86 60       	ori	r24, 0x06	; 6
-    7104:	80 93 c2 00 	sts	0x00C2, r24
-    7108:	08 95       	ret
+    712e:	80 91 c2 00 	lds	r24, 0x00C2
+    7132:	86 60       	ori	r24, 0x06	; 6
+    7134:	80 93 c2 00 	sts	0x00C2, r24
+    7138:	08 95       	ret
 
-0000710a <UART_Config_Receiver_Interrupt>:
+0000713a <UART_Config_Receiver_Interrupt>:
   }
 }
 
 void UART_Config_Receiver_Interrupt(void){
   UCSR0B|=(1<<RXCIE0);
-    710a:	e1 ec       	ldi	r30, 0xC1	; 193
-    710c:	f0 e0       	ldi	r31, 0x00	; 0
-    710e:	80 81       	ld	r24, Z
-    7110:	80 68       	ori	r24, 0x80	; 128
-    7112:	80 83       	st	Z, r24
+    713a:	e1 ec       	ldi	r30, 0xC1	; 193
+    713c:	f0 e0       	ldi	r31, 0x00	; 0
+    713e:	80 81       	ld	r24, Z
+    7140:	80 68       	ori	r24, 0x80	; 128
+    7142:	80 83       	st	Z, r24
   sei();
-    7114:	78 94       	sei
+    7144:	78 94       	sei
 }
-    7116:	08 95       	ret
+    7146:	08 95       	ret
 
-00007118 <UART_Init>:
+00007148 <UART_Transmit_Byte>:
+
+void UART_Transmit_Byte(uint8_t val){
+  UDR0=val;
+    7148:	80 93 c6 00 	sts	0x00C6, r24
+  while((UCSR0A & (1<<UDRE0))==0);
+    714c:	80 91 c0 00 	lds	r24, 0x00C0
+    7150:	85 ff       	sbrs	r24, 5
+    7152:	fc cf       	rjmp	.-8      	; 0x714c <UART_Transmit_Byte+0x4>
+}
+    7154:	08 95       	ret
+
+00007156 <UART_Receive_Byte>:
+
+
+uint8_t UART_Receive_Byte(void){
+  return UDR0;
+    7156:	80 91 c6 00 	lds	r24, 0x00C6
+}
+    715a:	08 95       	ret
+
+0000715c <__vector_18>:
+
+
+ISR(USART_RX_vect){
+    715c:	1f 92       	push	r1
+    715e:	0f 92       	push	r0
+    7160:	0f b6       	in	r0, 0x3f	; 63
+    7162:	0f 92       	push	r0
+    7164:	11 24       	eor	r1, r1
+    7166:	8f 93       	push	r24
+    7168:	9f 93       	push	r25
+    716a:	ef 93       	push	r30
+    716c:	ff 93       	push	r31
+  UART.Buf[UART.BufIndex] = UART_Receive_Byte();
+    716e:	e0 91 c8 01 	lds	r30, 0x01C8
+    7172:	f0 91 c9 01 	lds	r31, 0x01C9
+  while((UCSR0A & (1<<UDRE0))==0);
+}
+
+
+uint8_t UART_Receive_Byte(void){
+  return UDR0;
+    7176:	80 91 c6 00 	lds	r24, 0x00C6
+}
+
+
+ISR(USART_RX_vect){
+  UART.Buf[UART.BufIndex] = UART_Receive_Byte();
+    717a:	e0 50       	subi	r30, 0x00	; 0
+    717c:	ff 4f       	sbci	r31, 0xFF	; 255
+    717e:	80 83       	st	Z, r24
+  UART.BufIndex++;
+    7180:	80 91 c8 01 	lds	r24, 0x01C8
+    7184:	90 91 c9 01 	lds	r25, 0x01C9
+    7188:	01 96       	adiw	r24, 0x01	; 1
+    718a:	90 93 c9 01 	sts	0x01C9, r25
+    718e:	80 93 c8 01 	sts	0x01C8, r24
+  #ifdef UART_BUF_SIZE
+  if(UART.BufIndex>=UART_BUF_SIZE){
+    7192:	80 91 c8 01 	lds	r24, 0x01C8
+    7196:	90 91 c9 01 	lds	r25, 0x01C9
+    719a:	88 3c       	cpi	r24, 0xC8	; 200
+    719c:	91 05       	cpc	r25, r1
+    719e:	20 f0       	brcs	.+8      	; 0x71a8 <__vector_18+0x4c>
+    UART.BufIndex=0;
+    71a0:	10 92 c9 01 	sts	0x01C9, r1
+    71a4:	10 92 c8 01 	sts	0x01C8, r1
+  #else
+  if(UART.BufIndex>=140){
+    UART.BufIndex=0;
+  }
+  #endif
+}
+    71a8:	ff 91       	pop	r31
+    71aa:	ef 91       	pop	r30
+    71ac:	9f 91       	pop	r25
+    71ae:	8f 91       	pop	r24
+    71b0:	0f 90       	pop	r0
+    71b2:	0f be       	out	0x3f, r0	; 63
+    71b4:	0f 90       	pop	r0
+    71b6:	1f 90       	pop	r1
+    71b8:	18 95       	reti
+
+000071ba <UART_Get_Buf_Index>:
+
+
+
+
+uint16_t UART_Get_Buf_Index(void){
+  return UART.BufIndex;
+    71ba:	20 91 c8 01 	lds	r18, 0x01C8
+    71be:	30 91 c9 01 	lds	r19, 0x01C9
+}
+    71c2:	c9 01       	movw	r24, r18
+    71c4:	08 95       	ret
+
+000071c6 <UART_Init>:
+
 
 void UART_Init(uint32_t BAUD){
-    7118:	af 92       	push	r10
-    711a:	bf 92       	push	r11
-    711c:	cf 92       	push	r12
-    711e:	df 92       	push	r13
-    7120:	ef 92       	push	r14
-    7122:	ff 92       	push	r15
-    7124:	0f 93       	push	r16
-    7126:	1f 93       	push	r17
-    7128:	9b 01       	movw	r18, r22
-    712a:	ac 01       	movw	r20, r24
+    71c6:	9b 01       	movw	r18, r22
+    71c8:	ac 01       	movw	r20, r24
   cli();
-    712c:	f8 94       	cli
-#define  UART_ENABLE_TX
-#define  UART_ENABLE_RX
-#define  UART_ENABLE_RX_INT
+    71ca:	f8 94       	cli
+    71cc:	80 e0       	ldi	r24, 0x00	; 0
+    71ce:	90 e0       	ldi	r25, 0x00	; 0
+uart_t UART;
+
+void UART_Struct_Init(void){
+  #ifdef UART_BUF_SIZE
+  for(uint16_t i=0;i<UART_BUF_SIZE;i++){
+    UART.Buf[i]=0;
+    71d0:	fc 01       	movw	r30, r24
+    71d2:	e0 50       	subi	r30, 0x00	; 0
+    71d4:	ff 4f       	sbci	r31, 0xFF	; 255
+    71d6:	10 82       	st	Z, r1
+
+uart_t UART;
+
+void UART_Struct_Init(void){
+  #ifdef UART_BUF_SIZE
+  for(uint16_t i=0;i<UART_BUF_SIZE;i++){
+    71d8:	01 96       	adiw	r24, 0x01	; 1
+    71da:	88 3c       	cpi	r24, 0xC8	; 200
+    71dc:	91 05       	cpc	r25, r1
+    71de:	c1 f7       	brne	.-16     	; 0x71d0 <UART_Init+0xa>
+  #else
+  for(uint16_t i=0;i<140;i++){
+    UART.Buf[i]=0;
+  }
+  #endif
+  UART.BufIndex=0;
+    71e0:	10 92 c9 01 	sts	0x01C9, r1
+    71e4:	10 92 c8 01 	sts	0x01C8, r1
+}
 
 void UART_Clear_Registers(void){
   UCSR0A = 0;
-    712e:	00 ec       	ldi	r16, 0xC0	; 192
-    7130:	10 e0       	ldi	r17, 0x00	; 0
-    7132:	f8 01       	movw	r30, r16
-    7134:	10 82       	st	Z, r1
+    71e8:	10 92 c0 00 	sts	0x00C0, r1
   UCSR0B = 0;
-    7136:	71 ec       	ldi	r23, 0xC1	; 193
-    7138:	e7 2e       	mov	r14, r23
-    713a:	f1 2c       	mov	r15, r1
-    713c:	f7 01       	movw	r30, r14
-    713e:	10 82       	st	Z, r1
+    71ec:	10 92 c1 00 	sts	0x00C1, r1
   UCSR0C = 0;
-    7140:	10 92 c2 00 	sts	0x00C2, r1
+    71f0:	10 92 c2 00 	sts	0x00C2, r1
   UBRR0H = 0;
-    7144:	65 ec       	ldi	r22, 0xC5	; 197
-    7146:	a6 2e       	mov	r10, r22
-    7148:	b1 2c       	mov	r11, r1
-    714a:	f5 01       	movw	r30, r10
-    714c:	10 82       	st	Z, r1
+    71f4:	10 92 c5 00 	sts	0x00C5, r1
   UBRR0L = 0;
-    714e:	94 ec       	ldi	r25, 0xC4	; 196
-    7150:	c9 2e       	mov	r12, r25
-    7152:	d1 2c       	mov	r13, r1
-    7154:	f6 01       	movw	r30, r12
-    7156:	10 82       	st	Z, r1
-void UART_Init(uint32_t BAUD){
+    71f8:	10 92 c4 00 	sts	0x00C4, r1
   cli();
+  UART_Struct_Init();
   UART_Clear_Registers();
   
   #ifdef UART_DOUBLE_SPEED
   uint32_t UBRR_VAL = ((F_CPU/8)/BAUD)-1 ;
-    7158:	60 e6       	ldi	r22, 0x60	; 96
-    715a:	73 ee       	ldi	r23, 0xE3	; 227
-    715c:	86 e1       	ldi	r24, 0x16	; 22
-    715e:	90 e0       	ldi	r25, 0x00	; 0
-    7160:	0e 94 67 39 	call	0x72ce	; 0x72ce <__udivmodsi4>
-    7164:	21 50       	subi	r18, 0x01	; 1
-    7166:	30 40       	sbci	r19, 0x00	; 0
-    7168:	40 40       	sbci	r20, 0x00	; 0
-    716a:	50 40       	sbci	r21, 0x00	; 0
+    71fc:	60 e6       	ldi	r22, 0x60	; 96
+    71fe:	73 ee       	ldi	r23, 0xE3	; 227
+    7200:	86 e1       	ldi	r24, 0x16	; 22
+    7202:	90 e0       	ldi	r25, 0x00	; 0
+    7204:	0e 94 bc 39 	call	0x7378	; 0x7378 <__udivmodsi4>
+    7208:	21 50       	subi	r18, 0x01	; 1
+    720a:	30 40       	sbci	r19, 0x00	; 0
+    720c:	40 40       	sbci	r20, 0x00	; 0
+    720e:	50 40       	sbci	r21, 0x00	; 0
   UCSR0A|=(1<<U2X0);  
-    716c:	f8 01       	movw	r30, r16
-    716e:	80 81       	ld	r24, Z
-    7170:	82 60       	ori	r24, 0x02	; 2
-    7172:	80 83       	st	Z, r24
+    7210:	80 91 c0 00 	lds	r24, 0x00C0
+    7214:	82 60       	ori	r24, 0x02	; 2
+    7216:	80 93 c0 00 	sts	0x00C0, r24
   #else
   UCSR0A&=~(1<<U2X0);  
   uint32_t UBRR_VAL = ((F_CPU/16)/BAUD)-1 ;
   #endif
   
   UBRR0H = (uint8_t)((UBRR_VAL >> 8) & 0xFF);
-    7174:	bb 27       	eor	r27, r27
-    7176:	a5 2f       	mov	r26, r21
-    7178:	94 2f       	mov	r25, r20
-    717a:	83 2f       	mov	r24, r19
-    717c:	f5 01       	movw	r30, r10
-    717e:	80 83       	st	Z, r24
+    721a:	bb 27       	eor	r27, r27
+    721c:	a5 2f       	mov	r26, r21
+    721e:	94 2f       	mov	r25, r20
+    7220:	83 2f       	mov	r24, r19
+    7222:	80 93 c5 00 	sts	0x00C5, r24
   UBRR0L = (uint8_t)(UBRR_VAL & 0xFF) ;
-    7180:	f6 01       	movw	r30, r12
-    7182:	20 83       	st	Z, r18
+    7226:	20 93 c4 00 	sts	0x00C4, r18
   
   #ifdef UART_ENABLE_TX
     UART_Config_Transmitter();
-    7184:	0e 94 65 38 	call	0x70ca	; 0x70ca <UART_Config_Transmitter>
+    722a:	0e 94 7d 38 	call	0x70fa	; 0x70fa <UART_Config_Transmitter>
   #endif
   
   #ifdef UART_ENABLE_RX
     UART_Config_Receiver();
-    7188:	0e 94 75 38 	call	0x70ea	; 0x70ea <UART_Config_Receiver>
+    722e:	0e 94 8d 38 	call	0x711a	; 0x711a <UART_Config_Receiver>
     UCSR0C|=(1<<UCSZ00)|(1<<UCSZ01);
   }
 }
 
 void UART_Config_Receiver_Interrupt(void){
   UCSR0B|=(1<<RXCIE0);
-    718c:	f7 01       	movw	r30, r14
-    718e:	80 81       	ld	r24, Z
-    7190:	80 68       	ori	r24, 0x80	; 128
-    7192:	80 83       	st	Z, r24
+    7232:	80 91 c1 00 	lds	r24, 0x00C1
+    7236:	80 68       	ori	r24, 0x80	; 128
+    7238:	80 93 c1 00 	sts	0x00C1, r24
   sei();
-    7194:	78 94       	sei
+    723c:	78 94       	sei
   #endif
   
   #ifdef UART_ENABLE_RX_INT
     UART_Config_Receiver_Interrupt();
   #endif
-}
-    7196:	1f 91       	pop	r17
-    7198:	0f 91       	pop	r16
-    719a:	ff 90       	pop	r15
-    719c:	ef 90       	pop	r14
-    719e:	df 90       	pop	r13
-    71a0:	cf 90       	pop	r12
-    71a2:	bf 90       	pop	r11
-    71a4:	af 90       	pop	r10
-    71a6:	08 95       	ret
+    723e:	08 95       	ret
 
-000071a8 <UART_Transmit_Byte>:
+00007240 <Boot_Relocate_Vector_Table_To_Bootloader>:
+#define  BOOT_BAUD_RATE   38400        /*4 Byte*/
 
-void UART_Transmit_Byte(uint8_t val){
-  UDR0=val;
-    71a8:	80 93 c6 00 	sts	0x00C6, r24
-  while((UCSR0A & (1<<UDRE0))==0);
-    71ac:	80 91 c0 00 	lds	r24, 0x00C0
-    71b0:	85 ff       	sbrs	r24, 5
-    71b2:	fc cf       	rjmp	.-8      	; 0x71ac <UART_Transmit_Byte+0x4>
-    71b4:	08 95       	ret
-
-000071b6 <Boot_Relocate_Vector_Table_To_Bootloader>:
-#define  BOOT_BAUD_RATE   38400        /*3 Byte*/
-
-uint8_t  boot_config_packet[10];
+uint8_t  boot_config_packet[12];
 
 void Boot_Relocate_Vector_Table_To_Bootloader(void){
   if((MCUCR & (1<<IVCE))==0){
-    71b6:	05 b6       	in	r0, 0x35	; 53
-    71b8:	00 fc       	sbrc	r0, 0
-    71ba:	04 c0       	rjmp	.+8      	; 0x71c4 <Boot_Relocate_Vector_Table_To_Bootloader+0xe>
+    7240:	05 b6       	in	r0, 0x35	; 53
+    7242:	00 fc       	sbrc	r0, 0
+    7244:	04 c0       	rjmp	.+8      	; 0x724e <Boot_Relocate_Vector_Table_To_Bootloader+0xe>
     MCUCR = (1<<IVCE);
-    71bc:	81 e0       	ldi	r24, 0x01	; 1
-    71be:	85 bf       	out	0x35, r24	; 53
+    7246:	81 e0       	ldi	r24, 0x01	; 1
+    7248:	85 bf       	out	0x35, r24	; 53
     MCUCR = (1<<IVSEL);
-    71c0:	82 e0       	ldi	r24, 0x02	; 2
-    71c2:	85 bf       	out	0x35, r24	; 53
-    71c4:	08 95       	ret
+    724a:	82 e0       	ldi	r24, 0x02	; 2
+    724c:	85 bf       	out	0x35, r24	; 53
+    724e:	08 95       	ret
 
-000071c6 <Boot_Relocate_Vector_Table_To_App>:
+00007250 <Boot_Relocate_Vector_Table_To_App>:
   }
 }
 
 void Boot_Relocate_Vector_Table_To_App(void){
   if(MCUCR & (1<<IVCE)){
-    71c6:	05 b6       	in	r0, 0x35	; 53
-    71c8:	00 fe       	sbrs	r0, 0
-    71ca:	03 c0       	rjmp	.+6      	; 0x71d2 <Boot_Relocate_Vector_Table_To_App+0xc>
+    7250:	05 b6       	in	r0, 0x35	; 53
+    7252:	00 fe       	sbrs	r0, 0
+    7254:	03 c0       	rjmp	.+6      	; 0x725c <Boot_Relocate_Vector_Table_To_App+0xc>
     MCUCR = (1<<IVCE);
-    71cc:	81 e0       	ldi	r24, 0x01	; 1
-    71ce:	85 bf       	out	0x35, r24	; 53
+    7256:	81 e0       	ldi	r24, 0x01	; 1
+    7258:	85 bf       	out	0x35, r24	; 53
     MCUCR = 0;
-    71d0:	15 be       	out	0x35, r1	; 53
-    71d2:	08 95       	ret
+    725a:	15 be       	out	0x35, r1	; 53
+    725c:	08 95       	ret
 
-000071d4 <Boot_Calcuate_CRC>:
+0000725e <Boot_Calcuate_CRC>:
   }
 }
 
 uint16_t Boot_Calcuate_CRC(uint16_t crc, uint8_t data){
   crc=crc^((uint16_t)data<<8);
-    71d4:	36 2f       	mov	r19, r22
-    71d6:	20 e0       	ldi	r18, 0x00	; 0
-    71d8:	28 27       	eor	r18, r24
-    71da:	39 27       	eor	r19, r25
-    71dc:	40 e0       	ldi	r20, 0x00	; 0
+    725e:	36 2f       	mov	r19, r22
+    7260:	20 e0       	ldi	r18, 0x00	; 0
+    7262:	28 27       	eor	r18, r24
+    7264:	39 27       	eor	r19, r25
+    7266:	40 e0       	ldi	r20, 0x00	; 0
   for(uint8_t i=0;i<8;i++){
     if(crc & 0x8000){
 	  crc=(crc<<1)^0x1021;
-    71de:	61 e2       	ldi	r22, 0x21	; 33
-    71e0:	70 e1       	ldi	r23, 0x10	; 16
-    71e2:	c9 01       	movw	r24, r18
-    71e4:	88 0f       	add	r24, r24
-    71e6:	99 1f       	adc	r25, r25
+    7268:	61 e2       	ldi	r22, 0x21	; 33
+    726a:	70 e1       	ldi	r23, 0x10	; 16
+    726c:	c9 01       	movw	r24, r18
+    726e:	88 0f       	add	r24, r24
+    7270:	99 1f       	adc	r25, r25
 }
 
 uint16_t Boot_Calcuate_CRC(uint16_t crc, uint8_t data){
   crc=crc^((uint16_t)data<<8);
   for(uint8_t i=0;i<8;i++){
     if(crc & 0x8000){
-    71e8:	37 ff       	sbrs	r19, 7
-    71ea:	04 c0       	rjmp	.+8      	; 0x71f4 <Boot_Calcuate_CRC+0x20>
+    7272:	37 ff       	sbrs	r19, 7
+    7274:	04 c0       	rjmp	.+8      	; 0x727e <Boot_Calcuate_CRC+0x20>
 	  crc=(crc<<1)^0x1021;
-    71ec:	9c 01       	movw	r18, r24
-    71ee:	26 27       	eor	r18, r22
-    71f0:	37 27       	eor	r19, r23
-    71f2:	01 c0       	rjmp	.+2      	; 0x71f6 <Boot_Calcuate_CRC+0x22>
+    7276:	9c 01       	movw	r18, r24
+    7278:	26 27       	eor	r18, r22
+    727a:	37 27       	eor	r19, r23
+    727c:	01 c0       	rjmp	.+2      	; 0x7280 <Boot_Calcuate_CRC+0x22>
 	}
     else{
 	  crc<<=1;
-    71f4:	9c 01       	movw	r18, r24
+    727e:	9c 01       	movw	r18, r24
   }
 }
 
 uint16_t Boot_Calcuate_CRC(uint16_t crc, uint8_t data){
   crc=crc^((uint16_t)data<<8);
   for(uint8_t i=0;i<8;i++){
-    71f6:	4f 5f       	subi	r20, 0xFF	; 255
-    71f8:	48 30       	cpi	r20, 0x08	; 8
-    71fa:	99 f7       	brne	.-26     	; 0x71e2 <Boot_Calcuate_CRC+0xe>
+    7280:	4f 5f       	subi	r20, 0xFF	; 255
+    7282:	48 30       	cpi	r20, 0x08	; 8
+    7284:	99 f7       	brne	.-26     	; 0x726c <Boot_Calcuate_CRC+0xe>
     else{
 	  crc<<=1;
 	}
   }
   return crc;
 }
-    71fc:	c9 01       	movw	r24, r18
-    71fe:	08 95       	ret
+    7286:	c9 01       	movw	r24, r18
+    7288:	08 95       	ret
 
-00007200 <Boot_Calcuate_CRC_Block>:
+0000728a <Boot_Calcuate_CRC_Block>:
 
 uint16_t Boot_Calcuate_CRC_Block(uint8_t *buf, uint8_t len){
-    7200:	0f 93       	push	r16
-    7202:	1f 93       	push	r17
-    7204:	cf 93       	push	r28
-    7206:	df 93       	push	r29
-    7208:	06 2f       	mov	r16, r22
-    720a:	ec 01       	movw	r28, r24
-    720c:	20 e0       	ldi	r18, 0x00	; 0
-    720e:	30 e0       	ldi	r19, 0x00	; 0
-    7210:	10 e0       	ldi	r17, 0x00	; 0
-    7212:	06 c0       	rjmp	.+12     	; 0x7220 <Boot_Calcuate_CRC_Block+0x20>
+    728a:	0f 93       	push	r16
+    728c:	1f 93       	push	r17
+    728e:	cf 93       	push	r28
+    7290:	df 93       	push	r29
+    7292:	06 2f       	mov	r16, r22
+    7294:	ec 01       	movw	r28, r24
+    7296:	20 e0       	ldi	r18, 0x00	; 0
+    7298:	30 e0       	ldi	r19, 0x00	; 0
+    729a:	10 e0       	ldi	r17, 0x00	; 0
+    729c:	06 c0       	rjmp	.+12     	; 0x72aa <Boot_Calcuate_CRC_Block+0x20>
   uint16_t crc=0;
   for(uint8_t i=0;i<len;i++){
     crc=Boot_Calcuate_CRC(crc,buf[i]);
-    7214:	c9 01       	movw	r24, r18
-    7216:	69 91       	ld	r22, Y+
-    7218:	0e 94 ea 38 	call	0x71d4	; 0x71d4 <Boot_Calcuate_CRC>
-    721c:	9c 01       	movw	r18, r24
+    729e:	c9 01       	movw	r24, r18
+    72a0:	69 91       	ld	r22, Y+
+    72a2:	0e 94 2f 39 	call	0x725e	; 0x725e <Boot_Calcuate_CRC>
+    72a6:	9c 01       	movw	r18, r24
   return crc;
 }
 
 uint16_t Boot_Calcuate_CRC_Block(uint8_t *buf, uint8_t len){
   uint16_t crc=0;
   for(uint8_t i=0;i<len;i++){
-    721e:	1f 5f       	subi	r17, 0xFF	; 255
-    7220:	10 17       	cp	r17, r16
-    7222:	c0 f3       	brcs	.-16     	; 0x7214 <Boot_Calcuate_CRC_Block+0x14>
+    72a8:	1f 5f       	subi	r17, 0xFF	; 255
+    72aa:	10 17       	cp	r17, r16
+    72ac:	c0 f3       	brcs	.-16     	; 0x729e <Boot_Calcuate_CRC_Block+0x14>
     crc=Boot_Calcuate_CRC(crc,buf[i]);
   }
   return crc;
 }
-    7224:	c9 01       	movw	r24, r18
-    7226:	df 91       	pop	r29
-    7228:	cf 91       	pop	r28
-    722a:	1f 91       	pop	r17
-    722c:	0f 91       	pop	r16
-    722e:	08 95       	ret
+    72ae:	c9 01       	movw	r24, r18
+    72b0:	df 91       	pop	r29
+    72b2:	cf 91       	pop	r28
+    72b4:	1f 91       	pop	r17
+    72b6:	0f 91       	pop	r16
+    72b8:	08 95       	ret
 
-00007230 <Boot_Flush_Config_Packet>:
+000072ba <Boot_Flush_Config_Packet>:
 
 void Boot_Flush_Config_Packet(void){
-    7230:	e0 e0       	ldi	r30, 0x00	; 0
-    7232:	f1 e0       	ldi	r31, 0x01	; 1
-  for(uint8_t i=0;i<10;i++){
+    72ba:	ea ec       	ldi	r30, 0xCA	; 202
+    72bc:	f1 e0       	ldi	r31, 0x01	; 1
+  for(uint8_t i=0;i<12;i++){
     boot_config_packet[i]=0;
-    7234:	11 92       	st	Z+, r1
+    72be:	11 92       	st	Z+, r1
   }
   return crc;
 }
 
 void Boot_Flush_Config_Packet(void){
-  for(uint8_t i=0;i<10;i++){
-    7236:	81 e0       	ldi	r24, 0x01	; 1
-    7238:	ea 30       	cpi	r30, 0x0A	; 10
-    723a:	f8 07       	cpc	r31, r24
-    723c:	d9 f7       	brne	.-10     	; 0x7234 <Boot_Flush_Config_Packet+0x4>
+  for(uint8_t i=0;i<12;i++){
+    72c0:	81 e0       	ldi	r24, 0x01	; 1
+    72c2:	e6 3d       	cpi	r30, 0xD6	; 214
+    72c4:	f8 07       	cpc	r31, r24
+    72c6:	d9 f7       	brne	.-10     	; 0x72be <Boot_Flush_Config_Packet+0x4>
     boot_config_packet[i]=0;
   }
 }
-    723e:	08 95       	ret
+    72c8:	08 95       	ret
 
-00007240 <Boot_Build_Config_Packet>:
+000072ca <Boot_Build_Config_Packet>:
 
 void Boot_Build_Config_Packet(void){
-  boot_config_packet[0] = BOOT_SYNC_BYTE;
-    7240:	85 e5       	ldi	r24, 0x55	; 85
-    7242:	80 93 00 01 	sts	0x0100, r24
-  boot_config_packet[1] = (BOOT_DEV_SIG>>24  ) & 0xFF;
-    7246:	10 92 01 01 	sts	0x0101, r1
-  boot_config_packet[2] = (BOOT_DEV_SIG>>16  ) & 0xFF;
-    724a:	8e e1       	ldi	r24, 0x1E	; 30
-    724c:	80 93 02 01 	sts	0x0102, r24
-  boot_config_packet[3] = (BOOT_DEV_SIG>>8   ) & 0xFF;
-    7250:	85 e9       	ldi	r24, 0x95	; 149
-    7252:	80 93 03 01 	sts	0x0103, r24
-  boot_config_packet[4] = (BOOT_DEV_SIG>>0   ) & 0xFF;
-    7256:	8f e0       	ldi	r24, 0x0F	; 15
-    7258:	80 93 04 01 	sts	0x0104, r24
-  boot_config_packet[5] = (BOOT_BAUD_RATE>>16) & 0xFF;
-    725c:	10 92 05 01 	sts	0x0105, r1
-  boot_config_packet[6] = (BOOT_BAUD_RATE>>8 ) & 0xFF;
-    7260:	86 e9       	ldi	r24, 0x96	; 150
-    7262:	80 93 06 01 	sts	0x0106, r24
-  boot_config_packet[7] = (BOOT_BAUD_RATE>>0 ) & 0xFF;
-    7266:	10 92 07 01 	sts	0x0107, r1
-  uint16_t temp = Boot_Calcuate_CRC_Block(boot_config_packet, 8);
-    726a:	80 e0       	ldi	r24, 0x00	; 0
-    726c:	91 e0       	ldi	r25, 0x01	; 1
-    726e:	68 e0       	ldi	r22, 0x08	; 8
-    7270:	0e 94 00 39 	call	0x7200	; 0x7200 <Boot_Calcuate_CRC_Block>
-  boot_config_packet[8] = (temp>>8 ) & 0xFF;
-    7274:	90 93 08 01 	sts	0x0108, r25
-  boot_config_packet[9] = (temp>>0 ) & 0xFF;
-    7278:	80 93 09 01 	sts	0x0109, r24
+  boot_config_packet[0] = (BOOT_SYNC_BYTE>>8)  & 0xFF;
+    72ca:	85 e5       	ldi	r24, 0x55	; 85
+    72cc:	80 93 ca 01 	sts	0x01CA, r24
+  boot_config_packet[1] = (BOOT_SYNC_BYTE>>0)  & 0xFF;
+    72d0:	8a ea       	ldi	r24, 0xAA	; 170
+    72d2:	80 93 cb 01 	sts	0x01CB, r24
+  boot_config_packet[2] = (BOOT_DEV_SIG>>24  ) & 0xFF;
+    72d6:	10 92 cc 01 	sts	0x01CC, r1
+  boot_config_packet[3] = (BOOT_DEV_SIG>>16  ) & 0xFF;
+    72da:	8e e1       	ldi	r24, 0x1E	; 30
+    72dc:	80 93 cd 01 	sts	0x01CD, r24
+  boot_config_packet[4] = (BOOT_DEV_SIG>>8   ) & 0xFF;
+    72e0:	85 e9       	ldi	r24, 0x95	; 149
+    72e2:	80 93 ce 01 	sts	0x01CE, r24
+  boot_config_packet[5] = (BOOT_DEV_SIG>>0   ) & 0xFF;
+    72e6:	8f e0       	ldi	r24, 0x0F	; 15
+    72e8:	80 93 cf 01 	sts	0x01CF, r24
+  boot_config_packet[6] = (BOOT_BAUD_RATE>>24) & 0xFF;
+    72ec:	10 92 d0 01 	sts	0x01D0, r1
+  boot_config_packet[7] = (BOOT_BAUD_RATE>>16) & 0xFF;
+    72f0:	10 92 d1 01 	sts	0x01D1, r1
+  boot_config_packet[8] = (BOOT_BAUD_RATE>>8 ) & 0xFF;
+    72f4:	86 e9       	ldi	r24, 0x96	; 150
+    72f6:	80 93 d2 01 	sts	0x01D2, r24
+  boot_config_packet[9] = (BOOT_BAUD_RATE>>0 ) & 0xFF;
+    72fa:	10 92 d3 01 	sts	0x01D3, r1
+  uint16_t temp = Boot_Calcuate_CRC_Block(boot_config_packet, 10);
+    72fe:	8a ec       	ldi	r24, 0xCA	; 202
+    7300:	91 e0       	ldi	r25, 0x01	; 1
+    7302:	6a e0       	ldi	r22, 0x0A	; 10
+    7304:	0e 94 45 39 	call	0x728a	; 0x728a <Boot_Calcuate_CRC_Block>
+  boot_config_packet[10] = (temp>>8 ) & 0xFF;
+    7308:	90 93 d4 01 	sts	0x01D4, r25
+  boot_config_packet[11] = (temp>>0 ) & 0xFF;
+    730c:	80 93 d5 01 	sts	0x01D5, r24
 }
-    727c:	08 95       	ret
+    7310:	08 95       	ret
 
-0000727e <Boot_Send_Config_Packet>:
+00007312 <Boot_Send_Config_Packet>:
 
 void Boot_Send_Config_Packet(void){
-    727e:	cf 93       	push	r28
-    7280:	df 93       	push	r29
-    7282:	c0 e0       	ldi	r28, 0x00	; 0
-    7284:	d1 e0       	ldi	r29, 0x01	; 1
-  for(uint8_t i=0;i<10;i++){
+    7312:	cf 93       	push	r28
+    7314:	df 93       	push	r29
+    7316:	ca ec       	ldi	r28, 0xCA	; 202
+    7318:	d1 e0       	ldi	r29, 0x01	; 1
+  for(uint8_t i=0;i<12;i++){
     UART_Transmit_Byte(boot_config_packet[i]);
-    7286:	89 91       	ld	r24, Y+
-    7288:	0e 94 d4 38 	call	0x71a8	; 0x71a8 <UART_Transmit_Byte>
-  boot_config_packet[8] = (temp>>8 ) & 0xFF;
-  boot_config_packet[9] = (temp>>0 ) & 0xFF;
+    731a:	89 91       	ld	r24, Y+
+    731c:	0e 94 a4 38 	call	0x7148	; 0x7148 <UART_Transmit_Byte>
+  boot_config_packet[10] = (temp>>8 ) & 0xFF;
+  boot_config_packet[11] = (temp>>0 ) & 0xFF;
 }
 
 void Boot_Send_Config_Packet(void){
-  for(uint8_t i=0;i<10;i++){
-    728c:	81 e0       	ldi	r24, 0x01	; 1
-    728e:	ca 30       	cpi	r28, 0x0A	; 10
-    7290:	d8 07       	cpc	r29, r24
-    7292:	c9 f7       	brne	.-14     	; 0x7286 <Boot_Send_Config_Packet+0x8>
+  for(uint8_t i=0;i<12;i++){
+    7320:	81 e0       	ldi	r24, 0x01	; 1
+    7322:	c6 3d       	cpi	r28, 0xD6	; 214
+    7324:	d8 07       	cpc	r29, r24
+    7326:	c9 f7       	brne	.-14     	; 0x731a <Boot_Send_Config_Packet+0x8>
     UART_Transmit_Byte(boot_config_packet[i]);
   }
 }
-    7294:	df 91       	pop	r29
-    7296:	cf 91       	pop	r28
-    7298:	08 95       	ret
+    7328:	df 91       	pop	r29
+    732a:	cf 91       	pop	r28
+    732c:	08 95       	ret
 
-0000729a <Boot_Init>:
+0000732e <Boot_Init>:
+#define  BOOT_BAUD_RATE   38400        /*4 Byte*/
 
-
-void Boot_Init(uint32_t Baud_Rate){
-    729a:	ef 92       	push	r14
-    729c:	ff 92       	push	r15
-    729e:	0f 93       	push	r16
-    72a0:	1f 93       	push	r17
-    72a2:	7b 01       	movw	r14, r22
-    72a4:	8c 01       	movw	r16, r24
-#define  BOOT_BAUD_RATE   38400        /*3 Byte*/
-
-uint8_t  boot_config_packet[10];
+uint8_t  boot_config_packet[12];
 
 void Boot_Relocate_Vector_Table_To_Bootloader(void){
   if((MCUCR & (1<<IVCE))==0){
-    72a6:	05 b6       	in	r0, 0x35	; 53
-    72a8:	00 fc       	sbrc	r0, 0
-    72aa:	04 c0       	rjmp	.+8      	; 0x72b4 <Boot_Init+0x1a>
+    732e:	05 b6       	in	r0, 0x35	; 53
+    7330:	00 fc       	sbrc	r0, 0
+    7332:	04 c0       	rjmp	.+8      	; 0x733c <Boot_Init+0xe>
     MCUCR = (1<<IVCE);
-    72ac:	81 e0       	ldi	r24, 0x01	; 1
-    72ae:	85 bf       	out	0x35, r24	; 53
+    7334:	81 e0       	ldi	r24, 0x01	; 1
+    7336:	85 bf       	out	0x35, r24	; 53
     MCUCR = (1<<IVSEL);
-    72b0:	82 e0       	ldi	r24, 0x02	; 2
-    72b2:	85 bf       	out	0x35, r24	; 53
+    7338:	82 e0       	ldi	r24, 0x02	; 2
+    733a:	85 bf       	out	0x35, r24	; 53
 }
 
 
-void Boot_Init(uint32_t Baud_Rate){
+void Boot_Init(void){
   Boot_Relocate_Vector_Table_To_Bootloader();
   Boot_Build_Config_Packet();
-    72b4:	0e 94 20 39 	call	0x7240	; 0x7240 <Boot_Build_Config_Packet>
-  UART_Init(Baud_Rate);
-    72b8:	c8 01       	movw	r24, r16
-    72ba:	b7 01       	movw	r22, r14
-    72bc:	0e 94 8c 38 	call	0x7118	; 0x7118 <UART_Init>
+    733c:	0e 94 65 39 	call	0x72ca	; 0x72ca <Boot_Build_Config_Packet>
+  UART_Init(9600);
+    7340:	60 e8       	ldi	r22, 0x80	; 128
+    7342:	75 e2       	ldi	r23, 0x25	; 37
+    7344:	80 e0       	ldi	r24, 0x00	; 0
+    7346:	90 e0       	ldi	r25, 0x00	; 0
+    7348:	0e 94 e3 38 	call	0x71c6	; 0x71c6 <UART_Init>
   Boot_Send_Config_Packet();
-    72c0:	0e 94 3f 39 	call	0x727e	; 0x727e <Boot_Send_Config_Packet>
-    72c4:	1f 91       	pop	r17
-    72c6:	0f 91       	pop	r16
-    72c8:	ff 90       	pop	r15
-    72ca:	ef 90       	pop	r14
-    72cc:	08 95       	ret
+    734c:	0e 94 89 39 	call	0x7312	; 0x7312 <Boot_Send_Config_Packet>
+    7350:	88 e9       	ldi	r24, 0x98	; 152
+    7352:	9a e3       	ldi	r25, 0x3A	; 58
+    7354:	01 97       	sbiw	r24, 0x01	; 1
+    7356:	f1 f7       	brne	.-4      	; 0x7354 <Boot_Init+0x26>
+  _delay_ms(5);
+  UART_Init(BOOT_BAUD_RATE);
+    7358:	60 e0       	ldi	r22, 0x00	; 0
+    735a:	76 e9       	ldi	r23, 0x96	; 150
+    735c:	80 e0       	ldi	r24, 0x00	; 0
+    735e:	90 e0       	ldi	r25, 0x00	; 0
+    7360:	0e 94 e3 38 	call	0x71c6	; 0x71c6 <UART_Init>
+    7364:	8c e2       	ldi	r24, 0x2C	; 44
+    7366:	91 e0       	ldi	r25, 0x01	; 1
+    7368:	2c e2       	ldi	r18, 0x2C	; 44
+    736a:	31 e0       	ldi	r19, 0x01	; 1
+    736c:	f9 01       	movw	r30, r18
+    736e:	31 97       	sbiw	r30, 0x01	; 1
+    7370:	f1 f7       	brne	.-4      	; 0x736e <Boot_Init+0x40>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+    7372:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+    7374:	d9 f7       	brne	.-10     	; 0x736c <Boot_Init+0x3e>
+  _delay_ms(30);
+    7376:	08 95       	ret
 
-000072ce <__udivmodsi4>:
-    72ce:	a1 e2       	ldi	r26, 0x21	; 33
-    72d0:	1a 2e       	mov	r1, r26
-    72d2:	aa 1b       	sub	r26, r26
-    72d4:	bb 1b       	sub	r27, r27
-    72d6:	fd 01       	movw	r30, r26
-    72d8:	0d c0       	rjmp	.+26     	; 0x72f4 <__udivmodsi4_ep>
+00007378 <__udivmodsi4>:
+    7378:	a1 e2       	ldi	r26, 0x21	; 33
+    737a:	1a 2e       	mov	r1, r26
+    737c:	aa 1b       	sub	r26, r26
+    737e:	bb 1b       	sub	r27, r27
+    7380:	fd 01       	movw	r30, r26
+    7382:	0d c0       	rjmp	.+26     	; 0x739e <__udivmodsi4_ep>
 
-000072da <__udivmodsi4_loop>:
-    72da:	aa 1f       	adc	r26, r26
-    72dc:	bb 1f       	adc	r27, r27
-    72de:	ee 1f       	adc	r30, r30
-    72e0:	ff 1f       	adc	r31, r31
-    72e2:	a2 17       	cp	r26, r18
-    72e4:	b3 07       	cpc	r27, r19
-    72e6:	e4 07       	cpc	r30, r20
-    72e8:	f5 07       	cpc	r31, r21
-    72ea:	20 f0       	brcs	.+8      	; 0x72f4 <__udivmodsi4_ep>
-    72ec:	a2 1b       	sub	r26, r18
-    72ee:	b3 0b       	sbc	r27, r19
-    72f0:	e4 0b       	sbc	r30, r20
-    72f2:	f5 0b       	sbc	r31, r21
+00007384 <__udivmodsi4_loop>:
+    7384:	aa 1f       	adc	r26, r26
+    7386:	bb 1f       	adc	r27, r27
+    7388:	ee 1f       	adc	r30, r30
+    738a:	ff 1f       	adc	r31, r31
+    738c:	a2 17       	cp	r26, r18
+    738e:	b3 07       	cpc	r27, r19
+    7390:	e4 07       	cpc	r30, r20
+    7392:	f5 07       	cpc	r31, r21
+    7394:	20 f0       	brcs	.+8      	; 0x739e <__udivmodsi4_ep>
+    7396:	a2 1b       	sub	r26, r18
+    7398:	b3 0b       	sbc	r27, r19
+    739a:	e4 0b       	sbc	r30, r20
+    739c:	f5 0b       	sbc	r31, r21
 
-000072f4 <__udivmodsi4_ep>:
-    72f4:	66 1f       	adc	r22, r22
-    72f6:	77 1f       	adc	r23, r23
-    72f8:	88 1f       	adc	r24, r24
-    72fa:	99 1f       	adc	r25, r25
-    72fc:	1a 94       	dec	r1
-    72fe:	69 f7       	brne	.-38     	; 0x72da <__udivmodsi4_loop>
-    7300:	60 95       	com	r22
-    7302:	70 95       	com	r23
-    7304:	80 95       	com	r24
-    7306:	90 95       	com	r25
-    7308:	9b 01       	movw	r18, r22
-    730a:	ac 01       	movw	r20, r24
-    730c:	bd 01       	movw	r22, r26
-    730e:	cf 01       	movw	r24, r30
-    7310:	08 95       	ret
+0000739e <__udivmodsi4_ep>:
+    739e:	66 1f       	adc	r22, r22
+    73a0:	77 1f       	adc	r23, r23
+    73a2:	88 1f       	adc	r24, r24
+    73a4:	99 1f       	adc	r25, r25
+    73a6:	1a 94       	dec	r1
+    73a8:	69 f7       	brne	.-38     	; 0x7384 <__udivmodsi4_loop>
+    73aa:	60 95       	com	r22
+    73ac:	70 95       	com	r23
+    73ae:	80 95       	com	r24
+    73b0:	90 95       	com	r25
+    73b2:	9b 01       	movw	r18, r22
+    73b4:	ac 01       	movw	r20, r24
+    73b6:	bd 01       	movw	r22, r26
+    73b8:	cf 01       	movw	r24, r30
+    73ba:	08 95       	ret
 
-00007312 <_exit>:
-    7312:	f8 94       	cli
+000073bc <_exit>:
+    73bc:	f8 94       	cli
 
-00007314 <__stop_program>:
-    7314:	ff cf       	rjmp	.-2      	; 0x7314 <__stop_program>
+000073be <__stop_program>:
+    73be:	ff cf       	rjmp	.-2      	; 0x73be <__stop_program>

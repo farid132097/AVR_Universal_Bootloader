@@ -8,6 +8,31 @@
 #define  UART_ENABLE_TX
 #define  UART_ENABLE_RX
 #define  UART_ENABLE_RX_INT
+#define  UART_BUF_SIZE      200
+
+typedef struct uart_t{
+  #ifdef UART_BUF_SIZE
+  volatile uint8_t Buf[UART_BUF_SIZE];
+  #else
+  volatile uint8_t Buf[140];
+  #endif
+  volatile uint16_t BufIndex;
+}uart_t;
+
+uart_t UART;
+
+void UART_Struct_Init(void){
+  #ifdef UART_BUF_SIZE
+  for(uint16_t i=0;i<UART_BUF_SIZE;i++){
+    UART.Buf[i]=0;
+  }
+  #else
+  for(uint16_t i=0;i<140;i++){
+    UART.Buf[i]=0;
+  }
+  #endif
+  UART.BufIndex=0;
+}
 
 void UART_Clear_Registers(void){
   UCSR0A = 0;
@@ -36,8 +61,44 @@ void UART_Config_Receiver_Interrupt(void){
   sei();
 }
 
+void UART_Transmit_Byte(uint8_t val){
+  UDR0=val;
+  while((UCSR0A & (1<<UDRE0))==0);
+}
+
+
+uint8_t UART_Receive_Byte(void){
+  return UDR0;
+}
+
+
+ISR(USART_RX_vect){
+  UART.Buf[UART.BufIndex] = UART_Receive_Byte();
+  UART.BufIndex++;
+  #ifdef UART_BUF_SIZE
+  if(UART.BufIndex>=UART_BUF_SIZE){
+    UART.BufIndex=0;
+  }
+  #else
+  if(UART.BufIndex>=140){
+    UART.BufIndex=0;
+  }
+  #endif
+}
+
+
+
+
+
+
+uint16_t UART_Get_Buf_Index(void){
+  return UART.BufIndex;
+}
+
+
 void UART_Init(uint32_t BAUD){
   cli();
+  UART_Struct_Init();
   UART_Clear_Registers();
   
   #ifdef UART_DOUBLE_SPEED
@@ -62,9 +123,4 @@ void UART_Init(uint32_t BAUD){
   #ifdef UART_ENABLE_RX_INT
     UART_Config_Receiver_Interrupt();
   #endif
-}
-
-void UART_Transmit_Byte(uint8_t val){
-  UDR0=val;
-  while((UCSR0A & (1<<UDRE0))==0);
 }

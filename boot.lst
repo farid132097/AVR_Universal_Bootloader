@@ -60,7 +60,7 @@
   72               	.LVL3:
   73 0026 40E0      		ldi r20,lo8(0)
   74               	.LVL4:
-  75               	.LBB4:
+  75               	.LBB20:
   76               	.LM11:
   77 0028 61E2      		ldi r22,lo8(4129)
   78 002a 70E1      		ldi r23,hi8(4129)
@@ -88,7 +88,7 @@
  100 0040 4F5F      		subi r20,lo8(-(1))
  101 0042 4830      		cpi r20,lo8(8)
  102 0044 01F4      		brne .L10
- 103               	.LBE4:
+ 103               	.LBE20:
  104               	.LM16:
  105 0046 C901      		movw r24,r18
  106               	.LVL9:
@@ -118,7 +118,7 @@
  132 005c 00C0      		rjmp .L14
  133               	.LVL14:
  134               	.L15:
- 135               	.LBB5:
+ 135               	.LBB21:
  136               	.LM19:
  137 005e C901      		movw r24,r18
  138 0060 6991      		ld r22,Y+
@@ -132,7 +132,7 @@
  146               	.L14:
  147 006a 1017      		cp r17,r16
  148 006c 00F0      		brlo .L15
- 149               	.LBE5:
+ 149               	.LBE21:
  150               	.LM21:
  151 006e C901      		movw r24,r18
  152               	.LVL18:
@@ -155,16 +155,16 @@
  171 007a E0E0      		ldi r30,lo8(boot_config_packet)
  172 007c F0E0      		ldi r31,hi8(boot_config_packet)
  173               	.L18:
- 174               	.LBB6:
+ 174               	.LBB22:
  175               	.LM24:
  176 007e 1192      		st Z+,__zero_reg__
  177               	.LM25:
- 178 0080 80E0      		ldi r24,hi8(boot_config_packet+10)
- 179 0082 E030      		cpi r30,lo8(boot_config_packet+10)
+ 178 0080 80E0      		ldi r24,hi8(boot_config_packet+12)
+ 179 0082 E030      		cpi r30,lo8(boot_config_packet+12)
  180 0084 F807      		cpc r31,r24
  181 0086 01F4      		brne .L18
  182               	/* epilogue start */
- 183               	.LBE6:
+ 183               	.LBE22:
  184               	.LM26:
  185 0088 0895      		ret
  186               	.LFE10:
@@ -178,129 +178,175 @@
  196 008a 85E5      		ldi r24,lo8(85)
  197 008c 8093 0000 		sts boot_config_packet,r24
  198               	.LM29:
- 199 0090 1092 0000 		sts boot_config_packet+1,__zero_reg__
- 200               	.LM30:
- 201 0094 8EE1      		ldi r24,lo8(30)
- 202 0096 8093 0000 		sts boot_config_packet+2,r24
+ 199 0090 8AEA      		ldi r24,lo8(-86)
+ 200 0092 8093 0000 		sts boot_config_packet+1,r24
+ 201               	.LM30:
+ 202 0096 1092 0000 		sts boot_config_packet+2,__zero_reg__
  203               	.LM31:
- 204 009a 85E9      		ldi r24,lo8(-107)
+ 204 009a 8EE1      		ldi r24,lo8(30)
  205 009c 8093 0000 		sts boot_config_packet+3,r24
  206               	.LM32:
- 207 00a0 8FE0      		ldi r24,lo8(15)
+ 207 00a0 85E9      		ldi r24,lo8(-107)
  208 00a2 8093 0000 		sts boot_config_packet+4,r24
  209               	.LM33:
- 210 00a6 1092 0000 		sts boot_config_packet+5,__zero_reg__
- 211               	.LM34:
- 212 00aa 86E9      		ldi r24,lo8(-106)
- 213 00ac 8093 0000 		sts boot_config_packet+6,r24
+ 210 00a6 8FE0      		ldi r24,lo8(15)
+ 211 00a8 8093 0000 		sts boot_config_packet+5,r24
+ 212               	.LM34:
+ 213 00ac 1092 0000 		sts boot_config_packet+6,__zero_reg__
  214               	.LM35:
  215 00b0 1092 0000 		sts boot_config_packet+7,__zero_reg__
  216               	.LM36:
- 217 00b4 80E0      		ldi r24,lo8(boot_config_packet)
- 218 00b6 90E0      		ldi r25,hi8(boot_config_packet)
- 219 00b8 68E0      		ldi r22,lo8(8)
- 220 00ba 0E94 0000 		call Boot_Calcuate_CRC_Block
- 221               	.LM37:
- 222 00be 9093 0000 		sts boot_config_packet+8,r25
- 223               	.LM38:
- 224 00c2 8093 0000 		sts boot_config_packet+9,r24
- 225               	/* epilogue start */
+ 217 00b4 86E9      		ldi r24,lo8(-106)
+ 218 00b6 8093 0000 		sts boot_config_packet+8,r24
+ 219               	.LM37:
+ 220 00ba 1092 0000 		sts boot_config_packet+9,__zero_reg__
+ 221               	.LM38:
+ 222 00be 80E0      		ldi r24,lo8(boot_config_packet)
+ 223 00c0 90E0      		ldi r25,hi8(boot_config_packet)
+ 224 00c2 6AE0      		ldi r22,lo8(10)
+ 225 00c4 0E94 0000 		call Boot_Calcuate_CRC_Block
  226               	.LM39:
- 227 00c6 0895      		ret
- 228               	.LFE11:
- 230               	.global	Boot_Send_Config_Packet
- 232               	Boot_Send_Config_Packet:
- 233               	.LFB12:
- 234               	.LM40:
- 235 00c8 CF93      		push r28
- 236 00ca DF93      		push r29
- 237               	/* prologue: function */
- 238               	/* frame size = 0 */
- 239               	.LM41:
- 240 00cc C0E0      		ldi r28,lo8(boot_config_packet)
- 241 00ce D0E0      		ldi r29,hi8(boot_config_packet)
- 242               	.L24:
- 243               	.LBB7:
- 244               	.LM42:
- 245 00d0 8991      		ld r24,Y+
- 246 00d2 0E94 0000 		call UART_Transmit_Byte
- 247               	.LM43:
- 248 00d6 80E0      		ldi r24,hi8(boot_config_packet+10)
- 249 00d8 C030      		cpi r28,lo8(boot_config_packet+10)
- 250 00da D807      		cpc r29,r24
- 251 00dc 01F4      		brne .L24
- 252               	/* epilogue start */
- 253               	.LBE7:
- 254               	.LM44:
- 255 00de DF91      		pop r29
- 256 00e0 CF91      		pop r28
- 257 00e2 0895      		ret
- 258               	.LFE12:
- 260               	.global	Boot_Init
- 262               	Boot_Init:
- 263               	.LFB13:
- 264               	.LM45:
- 265               	.LVL21:
- 266 00e4 EF92      		push r14
- 267 00e6 FF92      		push r15
- 268 00e8 0F93      		push r16
- 269 00ea 1F93      		push r17
+ 227 00c8 9093 0000 		sts boot_config_packet+10,r25
+ 228               	.LM40:
+ 229 00cc 8093 0000 		sts boot_config_packet+11,r24
+ 230               	/* epilogue start */
+ 231               	.LM41:
+ 232 00d0 0895      		ret
+ 233               	.LFE11:
+ 235               	.global	Boot_Send_Config_Packet
+ 237               	Boot_Send_Config_Packet:
+ 238               	.LFB12:
+ 239               	.LM42:
+ 240 00d2 CF93      		push r28
+ 241 00d4 DF93      		push r29
+ 242               	/* prologue: function */
+ 243               	/* frame size = 0 */
+ 244               	.LM43:
+ 245 00d6 C0E0      		ldi r28,lo8(boot_config_packet)
+ 246 00d8 D0E0      		ldi r29,hi8(boot_config_packet)
+ 247               	.L24:
+ 248               	.LBB23:
+ 249               	.LM44:
+ 250 00da 8991      		ld r24,Y+
+ 251 00dc 0E94 0000 		call UART_Transmit_Byte
+ 252               	.LM45:
+ 253 00e0 80E0      		ldi r24,hi8(boot_config_packet+12)
+ 254 00e2 C030      		cpi r28,lo8(boot_config_packet+12)
+ 255 00e4 D807      		cpc r29,r24
+ 256 00e6 01F4      		brne .L24
+ 257               	/* epilogue start */
+ 258               	.LBE23:
+ 259               	.LM46:
+ 260 00e8 DF91      		pop r29
+ 261 00ea CF91      		pop r28
+ 262 00ec 0895      		ret
+ 263               	.LFE12:
+ 265               	.global	Boot_Init
+ 267               	Boot_Init:
+ 268               	.LFB13:
+ 269               	.LM47:
  270               	/* prologue: function */
  271               	/* frame size = 0 */
- 272 00ec 7B01      		movw r14,r22
- 273 00ee 8C01      		movw r16,r24
- 274               	.LBB8:
- 275               	.LBB9:
- 276               	.LM46:
- 277 00f0 05B6      		in __tmp_reg__,85-32
- 278 00f2 00FC      		sbrc __tmp_reg__,0
- 279 00f4 00C0      		rjmp .L28
- 280               	.LVL22:
- 281               	.LM47:
- 282 00f6 81E0      		ldi r24,lo8(1)
- 283 00f8 85BF      		out 85-32,r24
- 284               	.LM48:
- 285 00fa 82E0      		ldi r24,lo8(2)
- 286 00fc 85BF      		out 85-32,r24
- 287               	.L28:
- 288               	.LBE9:
- 289               	.LBE8:
- 290               	.LM49:
- 291 00fe 0E94 0000 		call Boot_Build_Config_Packet
- 292               	.LM50:
- 293 0102 C801      		movw r24,r16
- 294 0104 B701      		movw r22,r14
- 295 0106 0E94 0000 		call UART_Init
- 296               	.LM51:
- 297 010a 0E94 0000 		call Boot_Send_Config_Packet
- 298               	/* epilogue start */
- 299               	.LM52:
- 300 010e 1F91      		pop r17
- 301 0110 0F91      		pop r16
- 302 0112 FF90      		pop r15
- 303 0114 EF90      		pop r14
- 304               	.LVL23:
- 305 0116 0895      		ret
- 306               	.LFE13:
- 308               		.comm boot_config_packet,10,1
- 389               	.Letext0:
+ 272               	.LBB24:
+ 273               	.LBB25:
+ 274               	.LM48:
+ 275 00ee 05B6      		in __tmp_reg__,85-32
+ 276 00f0 00FC      		sbrc __tmp_reg__,0
+ 277 00f2 00C0      		rjmp .L28
+ 278               	.LM49:
+ 279 00f4 81E0      		ldi r24,lo8(1)
+ 280 00f6 85BF      		out 85-32,r24
+ 281               	.LM50:
+ 282 00f8 82E0      		ldi r24,lo8(2)
+ 283 00fa 85BF      		out 85-32,r24
+ 284               	.L28:
+ 285               	.LBE25:
+ 286               	.LBE24:
+ 287               	.LM51:
+ 288 00fc 0E94 0000 		call Boot_Build_Config_Packet
+ 289               	.LM52:
+ 290 0100 60E8      		ldi r22,lo8(9600)
+ 291 0102 75E2      		ldi r23,hi8(9600)
+ 292 0104 80E0      		ldi r24,hlo8(9600)
+ 293 0106 90E0      		ldi r25,hhi8(9600)
+ 294 0108 0E94 0000 		call UART_Init
+ 295               	.LM53:
+ 296 010c 0E94 0000 		call Boot_Send_Config_Packet
+ 297               	.LBB26:
+ 298               	.LBB27:
+ 299               	.LBB28:
+ 300               	.LBB29:
+ 301               	.LM54:
+ 302 0110 88E9      		ldi r24,lo8(15000)
+ 303 0112 9AE3      		ldi r25,hi8(15000)
+ 304               	.LVL21:
+ 305               	/* #APP */
+ 306               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 307 0114 0197      		1: sbiw r24,1
+ 308 0116 01F4      		brne 1b
+ 309               	 ;  0 "" 2
+ 310               	/* #NOAPP */
+ 311               	.LBE29:
+ 312               	.LBE28:
+ 313               	.LBE27:
+ 314               	.LBE26:
+ 315               	.LM55:
+ 316 0118 60E0      		ldi r22,lo8(38400)
+ 317 011a 76E9      		ldi r23,hi8(38400)
+ 318 011c 80E0      		ldi r24,hlo8(38400)
+ 319 011e 90E0      		ldi r25,hhi8(38400)
+ 320 0120 0E94 0000 		call UART_Init
+ 321               	.LVL22:
+ 322 0124 8CE2      		ldi r24,lo8(300)
+ 323 0126 91E0      		ldi r25,hi8(300)
+ 324               	.LVL23:
+ 325               	.LBB30:
+ 326               	.LBB31:
+ 327               	.LBB32:
+ 328               	.LBB33:
+ 329               	.LM56:
+ 330 0128 2CE2      		ldi r18,lo8(300)
+ 331 012a 31E0      		ldi r19,hi8(300)
+ 332               	.L29:
+ 333 012c F901      		movw r30,r18
+ 334               	.LVL24:
+ 335               	/* #APP */
+ 336               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 337 012e 3197      		1: sbiw r30,1
+ 338 0130 01F4      		brne 1b
+ 339               	 ;  0 "" 2
+ 340               	/* #NOAPP */
+ 341               	.LBE33:
+ 342               	.LBE32:
+ 343               	.LM57:
+ 344 0132 0197      		sbiw r24,1
+ 345               	.LM58:
+ 346 0134 01F4      		brne .L29
+ 347               	/* epilogue start */
+ 348               	.LBE31:
+ 349               	.LBE30:
+ 350               	.LM59:
+ 351 0136 0895      		ret
+ 352               	.LFE13:
+ 354               		.comm boot_config_packet,12,1
+ 435               	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 boot.c
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:2      *ABS*:0000003f __SREG__
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:3      *ABS*:0000003e __SP_H__
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:4      *ABS*:0000003d __SP_L__
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:5      *ABS*:00000034 __CCP__
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:6      *ABS*:00000000 __tmp_reg__
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:7      *ABS*:00000001 __zero_reg__
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:18     .text:00000000 Boot_Relocate_Vector_Table_To_Bootloader
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:39     .text:00000010 Boot_Relocate_Vector_Table_To_App
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:59     .text:0000001e Boot_Calcuate_CRC
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:113    .text:0000004a Boot_Calcuate_CRC_Block
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:165    .text:0000007a Boot_Flush_Config_Packet
-                            *COM*:0000000a boot_config_packet
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:190    .text:0000008a Boot_Build_Config_Packet
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:232    .text:000000c8 Boot_Send_Config_Packet
-C:\Users\farid\AppData\Local\Temp/ccw8D1Xj.s:262    .text:000000e4 Boot_Init
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:2      *ABS*:0000003f __SREG__
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:3      *ABS*:0000003e __SP_H__
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:4      *ABS*:0000003d __SP_L__
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:5      *ABS*:00000034 __CCP__
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:18     .text:00000000 Boot_Relocate_Vector_Table_To_Bootloader
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:39     .text:00000010 Boot_Relocate_Vector_Table_To_App
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:59     .text:0000001e Boot_Calcuate_CRC
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:113    .text:0000004a Boot_Calcuate_CRC_Block
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:165    .text:0000007a Boot_Flush_Config_Packet
+                            *COM*:0000000c boot_config_packet
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:190    .text:0000008a Boot_Build_Config_Packet
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:237    .text:000000d2 Boot_Send_Config_Packet
+C:\Users\farid\AppData\Local\Temp/ccvLaKmb.s:267    .text:000000ee Boot_Init
 
 UNDEFINED SYMBOLS
 UART_Transmit_Byte

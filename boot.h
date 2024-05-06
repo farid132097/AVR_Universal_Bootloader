@@ -7,4 +7,4 @@ uint16_t Boot_Calcuate_CRC_Block(uint8_t *buf, uint8_t len);
 void     Boot_Flush_Config_Packet(void);
 void     Boot_Build_Config_Packet(void);
 void     Boot_Send_Config_Packet(void);
-void     Boot_Init(uint32_t Baud_Rate);
+void     Boot_Init(void);
