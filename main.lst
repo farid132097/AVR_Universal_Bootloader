@@ -14,67 +14,47 @@
   22               	/* frame size = 0 */
   23               	.LM2:
   24 0000 0E94 0000 		call Boot_Init
-  25               	.LM3:
-  26 0004 0E94 0000 		call UART_Get_Buf_Index
-  27 0008 0C97      		sbiw r24,12
-  28 000a 01F4      		brne .L2
-  29               	.LM4:
-  30 000c 549A      		sbi 42-32,4
-  31               	.LM5:
-  32 000e 5C9A      		sbi 43-32,4
-  33 0010 00C0      		rjmp .L3
-  34               	.L2:
-  35               	.LM6:
-  36 0012 549A      		sbi 42-32,4
-  37               	.LM7:
-  38 0014 5C98      		cbi 43-32,4
-  39               	.L3:
-  40               	.LM8:
-  41 0016 0E94 0000 		call UART_Get_Buf_Index
-  42 001a 0E94 0000 		call UART_Transmit_Byte
-  43 001e 80ED      		ldi r24,lo8(2000)
-  44 0020 97E0      		ldi r25,hi8(2000)
-  45               	.LVL0:
-  46               	.LBB12:
-  47               	.LBB13:
-  48               	.LBB14:
-  49               	.LBB15:
-  50               	.LM9:
-  51 0022 2CE2      		ldi r18,lo8(300)
-  52 0024 31E0      		ldi r19,hi8(300)
-  53               	.LVL1:
-  54               	.L8:
-  55 0026 F901      		movw r30,r18
-  56               	/* #APP */
-  57               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
-  58 0028 3197      		1: sbiw r30,1
-  59 002a 01F4      		brne 1b
-  60               	 ;  0 "" 2
-  61               	/* #NOAPP */
-  62               	.LBE15:
-  63               	.LBE14:
-  64               	.LM10:
-  65 002c 0197      		sbiw r24,1
-  66               	.LM11:
-  67 002e 01F4      		brne .L8
-  68 0030 80ED      		ldi r24,lo8(2000)
-  69 0032 97E0      		ldi r25,hi8(2000)
-  70 0034 00C0      		rjmp .L8
-  71               	.LBE13:
-  72               	.LBE12:
-  73               	.LFE6:
-  99               	.Letext0:
+  25 0004 80ED      		ldi r24,lo8(2000)
+  26 0006 97E0      		ldi r25,hi8(2000)
+  27               	.LVL0:
+  28               	.LBB12:
+  29               	.LBB13:
+  30               	.LBB14:
+  31               	.LBB15:
+  32               	.LM3:
+  33 0008 2CE2      		ldi r18,lo8(300)
+  34 000a 31E0      		ldi r19,hi8(300)
+  35               	.LVL1:
+  36               	.L6:
+  37 000c F901      		movw r30,r18
+  38               	/* #APP */
+  39               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+  40 000e 3197      		1: sbiw r30,1
+  41 0010 01F4      		brne 1b
+  42               	 ;  0 "" 2
+  43               	/* #NOAPP */
+  44               	.LBE15:
+  45               	.LBE14:
+  46               	.LM4:
+  47 0012 0197      		sbiw r24,1
+  48               	.LM5:
+  49 0014 01F4      		brne .L6
+  50 0016 80ED      		ldi r24,lo8(2000)
+  51 0018 97E0      		ldi r25,hi8(2000)
+  52 001a 00C0      		rjmp .L6
+  53               	.LBE13:
+  54               	.LBE12:
+  55               	.LFE6:
+  81               	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\farid\AppData\Local\Temp/ccIoNC16.s:2      *ABS*:0000003f __SREG__
-C:\Users\farid\AppData\Local\Temp/ccIoNC16.s:3      *ABS*:0000003e __SP_H__
-C:\Users\farid\AppData\Local\Temp/ccIoNC16.s:4      *ABS*:0000003d __SP_L__
-C:\Users\farid\AppData\Local\Temp/ccIoNC16.s:5      *ABS*:00000034 __CCP__
-C:\Users\farid\AppData\Local\Temp/ccIoNC16.s:6      *ABS*:00000000 __tmp_reg__
-C:\Users\farid\AppData\Local\Temp/ccIoNC16.s:7      *ABS*:00000001 __zero_reg__
-C:\Users\farid\AppData\Local\Temp/ccIoNC16.s:18     .text:00000000 main
+C:\Users\farid\AppData\Local\Temp/ccArKozp.s:2      *ABS*:0000003f __SREG__
+C:\Users\farid\AppData\Local\Temp/ccArKozp.s:3      *ABS*:0000003e __SP_H__
+C:\Users\farid\AppData\Local\Temp/ccArKozp.s:4      *ABS*:0000003d __SP_L__
+C:\Users\farid\AppData\Local\Temp/ccArKozp.s:5      *ABS*:00000034 __CCP__
+C:\Users\farid\AppData\Local\Temp/ccArKozp.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\farid\AppData\Local\Temp/ccArKozp.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\farid\AppData\Local\Temp/ccArKozp.s:18     .text:00000000 main
 
 UNDEFINED SYMBOLS
 Boot_Init
-UART_Get_Buf_Index
-UART_Transmit_Byte

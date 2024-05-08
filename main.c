@@ -9,14 +9,7 @@ int main(void){
 
   Boot_Init();
   
-  if(UART_Get_Buf_Index()==12){
-    DDRD |= (1<<4);
-	PORTD|= (1<<4);
-  }else{
-    DDRD |= (1<<4);
-	PORTD&=~(1<<4);
-  }
-  UART_Transmit_Byte(UART_Get_Buf_Index());
+  
   
   while(1){
 	
